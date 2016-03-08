@@ -17,7 +17,9 @@ namespace StyleCop.Baboon.Tests
         public void ExitsWithErrorWhenArgumentIsNotPresent()
         {
             var stringBuilder = new StringBuilder();
-            stringBuilder.Append("Usage: StyleCop.Baboon.exe [stylecop-settings-path] [path-to-analyze] [ignored-paths]");
+            stringBuilder.Append("Usage: StyleCop.Baboon.exe <stylecop-settings-path> <path-to-analyze> <ignored-path> [<optional-ignored-path> <optional-ignored-path>...]\r\n" +
+                "OR\r\n" +
+                "StyelCop.Baboon.exe --settings-path=<stylecop-settings-path> --analyze-path=<path-to-analyze> [--checkstyle-output-path=<optional-checktyle-output-path>] [--ignored-path=<semicolon-seperated-paths>]");
             stringBuilder.Append(Environment.NewLine);
             var expectedMessage = stringBuilder.ToString();
 

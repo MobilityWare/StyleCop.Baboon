@@ -30,7 +30,7 @@
         {
             if (e.SourceCode != null)
             {
-                var violation = new Violation(e.Violation.Rule.CheckId, e.Message, e.LineNumber);
+                var violation = new Violation(e.Violation.Rule.CheckId, e.Message, e.LineNumber, e.Violation.Rule.Namespace, e.Violation.Rule.Name, e.Violation.Rule.Warning);
                 this.violations.AddViolationToFile(e.SourceCode.Path, violation);
             }
         }

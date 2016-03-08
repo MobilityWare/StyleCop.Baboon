@@ -24,8 +24,9 @@
             }
 
             var allSourceCodeFiles = this.fileSystemHandler.GetAllSourceCodeFiles(path);
+
             var filteredSourceCodeFiles = allSourceCodeFiles.Where(
-                sourceCodeFileName => false == ignoredPaths.Any(sourceCodeFileName.StartsWith));
+                sourceCodeFileName => false == (ignoredPaths != null && ignoredPaths.Any(sourceCodeFileName.StartsWith)));            
             fileList.AddRange(filteredSourceCodeFiles);
 
             return new Project(path, fileList, settings);
