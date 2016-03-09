@@ -24,9 +24,22 @@ StyleCop.Baboon helps you to fix [StyleCop](https://stylecop.codeplex.com/) prob
 
 2. Use your custom StyleCop settings to analyze a file or a directory. This will generate ```StyleCopViolations.xml``` file.
 
+    Basic Usage:
+
     ```
-    $ [mono] StyleCop.Baboon.exe Settings.StyleCop StyleCop.Baboon/Program.cs
+    $ [mono] StyleCop.Baboon.exe Settings.StyleCop StyleCop.Baboon/Program.cs /obj
     ```
+    
+    Usage with additional switches:      
+    
+    ```
+    $ [mono] StyleCop.Baboon.exe --settings-path=Settings.StyleCop --analyze-path=StyleCop.Baboon/Program.cs --checkstyle-output-path=myFile.xml
+    ```
+    This currently supports:
+    --settings-path : (Required) The path of the StyleCop settings file
+    --analyze-path : (Required) The path of the file or folders to be analyzed by StyleCop
+    --ignored-path : (Optional) A semicolon separated set of paths to ignored  
+    --checkstyle-output-path : (Optional) The path to write a xml file representing the StyleCop output in Checkstyle's format  
 
 3. Fix StyleCop's complaints and stay on the line to avoid more complaints.
 
@@ -50,6 +63,8 @@ StyleCop.Baboon helps you to fix [StyleCop](https://stylecop.codeplex.com/) prob
 This was the motivation to create this project!
 
 Jenkins [Violations plugin](https://wiki.jenkins-ci.org/display/JENKINS/Violations) supports StyleCop and you can use StyleCop.Baboon to generate the xml file that will be used by the plugin.
+
+The Checkstyle output format addition is give TeamCity a mechanism to ingest the StyleCop results.
 
 ## Author
 
