@@ -33,13 +33,14 @@ StyleCop.Baboon helps you to fix [StyleCop](https://stylecop.codeplex.com/) prob
     Usage with additional switches:      
     
     ```
-    $ [mono] StyleCop.Baboon.exe --settings-path=Settings.StyleCop --analyze-path=StyleCop.Baboon/Program.cs --checkstyle-output-path=myFile.xml
+    $ [mono] StyleCop.Baboon.exe --settings-path=Settings.StyleCop --analyze-path=StyleCop.Baboon/Program.cs --ignored-path=StyleCop.Baboon/obj --checkstyle-output-path=myFile.xml 
     ```
-    This currently supports:
-    --settings-path : (Required) The path of the StyleCop settings file
-    --analyze-path : (Required) The path of the file or folders to be analyzed by StyleCop
-    --ignored-path : (Optional) A semicolon separated set of paths to ignored  
-    --checkstyle-output-path : (Optional) The path to write a xml file representing the StyleCop output in Checkstyle's format  
+    
+    This currently supports:  
+     --settings-path : (Required) The path of the StyleCop settings file  
+     --analyze-path : (Required) The path of the file or folders to be analyzed by StyleCop  
+     --ignored-path : (Optional) A semicolon separated set of paths to ignored  
+     --checkstyle-output-path : (Optional) The path to write a xml file representing the StyleCop output in Checkstyle's format  
 
 3. Fix StyleCop's complaints and stay on the line to avoid more complaints.
 
