@@ -55,6 +55,40 @@
             this.AssertProjectsAreEqual(expectedProject, project);
         }
 
+        [Test]
+        public void CreateFromPathWithCustomSettingsForMultiFileProjectAndExcludeFirstFile()
+        {
+            var expectedProject = new Project(MultiFileProjectPath, new List<string> { SecondFile }, Settings);
+
+            this.fileSystemHandler.Setup(f => f.IsDirectory(MultiFileProjectPath)).Returns(true);
+
+            this.fileSystemHandler.Setup(f => f.GetAllSourceCodeFiles(MultiFileProjectPath))
+                .Returns(new List<string> { FirstFile, SecondFile });
+
+            var factory = new ProjectFactory(this.fileSystemHandler.Object);
+
+            var project = factory.CreateFromPathWithCustomSettings(MultiFileProjectPath, Settings, new []{ FirstFile });
+
+            this.AssertProjectsAreEqual(expectedProject, project);
+        }
+
+        [Test]
+        public void CreateFromPathWithCustomSettingsForMultiFileProjectWithNoIgnoredPath()
+        {
+            var expectedProject = new Project(MultiFileProjectPath, new List<string> { FirstFile, SecondFile }, Settings);
+
+            this.fileSystemHandler.Setup(f => f.IsDirectory(MultiFileProjectPath)).Returns(true);
+
+            this.fileSystemHandler.Setup(f => f.GetAllSourceCodeFiles(MultiFileProjectPath))
+                .Returns(new List<string> { FirstFile, SecondFile });
+
+            var factory = new ProjectFactory(this.fileSystemHandler.Object);
+
+            var project = factory.CreateFromPathWithCustomSettings(MultiFileProjectPath, Settings, null);
+
+            this.AssertProjectsAreEqual(expectedProject, project);
+        }
+
         private void AssertProjectsAreEqual(Project expected, Project actual)
         {
             Assert.AreEqual(expected.Settings, actual.Settings, "Projects settings do not match");

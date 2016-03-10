@@ -1,6 +1,8 @@
 namespace StyleCop.Baboon
 {
     using System;
+    using System.Collections.Generic;
+    using System.IO;
     using StyleCop.Baboon.Analyzer;
     using StyleCop.Baboon.Analyzer.StyleCop;
     using StyleCop.Baboon.Infrastructure;
@@ -16,35 +18,34 @@ namespace StyleCop.Baboon
 
         public static int Main(string[] args)
         {
-            if (args.Length < 3)
+            ProgramParameters parameters;
+
+            try
+            {
+                parameters = ProgramParameters.ExtractParameters(args);
+            }
+            catch (Exception) 
             {
                 PrintUsage();
-
                 return MissingArgumentsErrorCode;
             }
 
-            var settings = args[0];
-            var projectPath = args[1];
-            var ignoredPathsLenght = args.Length - 2;
-            var ignoredPaths = new string[ignoredPathsLenght];
-            Array.Copy(args, 2, ignoredPaths, 0, ignoredPathsLenght);
-
-            return Analyze(settings, projectPath, ignoredPaths);
+            return Analyze(parameters);
         }
 
-        private static int Analyze(string settings, string projectPath, string[] ignoredPaths)
+        private static int Analyze(ProgramParameters parameters)
         {
             var fileSystemHandler = new FileSystemHandler();
             var outputWriter = new StandardOutputWriter();
 
-            if (false == fileSystemHandler.Exists(settings))
+            if (false == fileSystemHandler.Exists(parameters.Settings))
             {
                 outputWriter.WriteLineWithSeparator("Given settings file does not exist. Exiting...", string.Empty);
 
                 return SettingsFileDoesNotExistErrorCode;
             }
 
-            if (false == fileSystemHandler.Exists(projectPath))
+            if (false == fileSystemHandler.Exists(parameters.ProjectPath))
             {
                 outputWriter.WriteLineWithSeparator("Given path to analyze does not exist. Exiting...", string.Empty);
 
@@ -53,12 +54,21 @@ namespace StyleCop.Baboon
 
             var analyzer = new StyleCopAnalyzer();
             var projectFactory = new ProjectFactory(new FileSystemHandler());
-            var project = projectFactory.CreateFromPathWithCustomSettings(projectPath, settings, ignoredPaths);
+            var project = projectFactory.CreateFromPathWithCustomSettings(parameters.ProjectPath, parameters.Settings, parameters.IgnoredPaths);
             var violations = analyzer.GetViolationsFromProject(project);
 
-            var renderer = new ConsoleRenderer(outputWriter);
+            var consoleRenderer = new ConsoleRenderer(outputWriter);
+            consoleRenderer.RenderViolationList(violations);
 
-            renderer.RenderViolationList(violations);
+            if (!string.IsNullOrWhiteSpace(parameters.CheckStyleOutputFile)) 
+            {
+                using (TextWriter textWriter = File.CreateText(parameters.CheckStyleOutputFile)) 
+                {
+                    IOutputWriter fileOutputWriter = new FileOutputWriter(textWriter);
+                    var checkStyleRenderer = new CheckStyleRenderer(fileOutputWriter);
+                    checkStyleRenderer.RenderViolationList(violations);
+                }
+            }
 
             if (violations.Empty)
             {
@@ -70,7 +80,9 @@ namespace StyleCop.Baboon
 
         private static void PrintUsage()
         {
-            Console.WriteLine("Usage: StyleCop.Baboon.exe [stylecop-settings-path] [path-to-analyze] [ignored-paths]");
+            Console.WriteLine("Usage: StyleCop.Baboon.exe <stylecop-settings-path> <path-to-analyze> <ignored-path> [<optional-ignored-path> <optional-ignored-path>...]\r\n" +
+                "OR\r\n" +
+                "StyelCop.Baboon.exe --settings-path=<stylecop-settings-path> --analyze-path=<path-to-analyze> [--checkstyle-output-path=<optional-checktyle-output-path>] [--ignored-path=<semicolon-seperated-paths>]");
         }
     }
 }
