@@ -9,7 +9,7 @@ StyleCop.Baboon helps you to fix [StyleCop](https://stylecop.codeplex.com/) prob
 1. Clone this repository and build the solution.
 
     On Windows:
-
+asdf
     ```sh
     $ nuget restore
     $ msbuild "StyleCop.Baboon.sln"
